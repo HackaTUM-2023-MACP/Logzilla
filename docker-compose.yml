@@ -1,0 +1,21 @@
+# Docker Compose file that orchestrates the launch of the two containers as part of a network.
+
+services:
+  api:
+    build:
+      # configures the root directory for the build
+      context: .      
+      # tells Docker Compose which dockerfile to use
+      dockerfile: Dockerfile.backend  
+    # defines the name of the container image.  
+    image: app-backend
+    # does not need to map any ports, because it is now an internal service that only needs 
+    # to be reachable by the client container, but not from the outside world.
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    image: app-frontend
+    # maps port 80, which is the port exposed by the nginx image, to port 3000 on the host computer
+    ports:
+      - "3000:80"
