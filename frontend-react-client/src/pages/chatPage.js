@@ -3,7 +3,6 @@ import ChatComponent from '../components/Chat';
 import SummaryBox from '../components/SummaryBox';
 
 const ChatPage = ({ navbarHeight, footerHeight }) => {
-  const [summaryMarkdown, setSummaryMarkdown] = useState('');
 
   return (
     <div
@@ -13,7 +12,7 @@ const ChatPage = ({ navbarHeight, footerHeight }) => {
       <div className='grid grid-cols-3 gap-8 w-full p-20 h-full'>
         {/* SummaryBox takes 2 out of 3 columns */}
         <div className='col-span-2'>
-          <SummaryBox className='' markdown={summaryMarkdown} />
+          <SummaryBox className=''/>
         </div>
         {/* ChatComponent takes 1 out of 3 columns */}
         <div className='col-span-1'>
