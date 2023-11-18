@@ -40,6 +40,7 @@ const UploadBox = () => {
   };
 
   const handleDragEnter = (e) => {
+    if (isWaiting) return;
     e.preventDefault();
     setIsDragging(true);
   };
@@ -54,16 +55,19 @@ const UploadBox = () => {
   };
 
   const handleDrop = async (e) => {
+    if (isWaiting) return;
     e.preventDefault();
     setIsDragging(false);
     await uploadFile(e);
   };
 
   const handleBoxClick = () => {
+    if (isWaiting) return;
     fileInputRef.current.click();
   };
 
   const handleFileInputChange = async (e) => {
+    if (isWaiting) return;
     await uploadFile(e);
   };
 
@@ -85,7 +89,7 @@ const UploadBox = () => {
           style={{ display: 'none' }}
           onChange={handleFileInputChange}
         />
-        <div className="text-center">
+        <div className="text-center pointer-events-none">
           {isWaiting ? (
             <div>
               <p className="text-4xl font-bold mb-10">{filePath}</p>
