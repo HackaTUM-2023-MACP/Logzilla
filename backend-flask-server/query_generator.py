@@ -27,7 +27,8 @@ class ChatAssistant:
         return completion
 
 
-    def combine_messages(self, user_content_list, assistant_content_list):
+    def combine_messages(self, user_content_list, assistant_content_list, current_summary, new_query_results):
+        conversation_chat_response = [{"role": "system", "content": current_summary}]
         conversation_sql_query = [{"role": "system", "content": "You are only allowed to reply with an SQL query. For filtering, only use fuzzy matching and never include the message in the query. The database table has the following columns: timestamp TIMESTAMP, machine VARCHAR(255), layer VARCHAR(255), message TEXT, message_vector vector(768). "}]
         conversation_reference_message = [{"role": "system", "content": "Please reply only with a possible message that we should look for in a system logfile to find the answers to the user's prompt."}]
 
@@ -49,7 +50,9 @@ chat_assistant = ChatAssistant(api_key)
 # Combine messages to conversation context
 user_messages = ["Are there any ssh errors in the last 24 hours?", "sorry, I meant the last 48 hours"]
 assistant_messages = ["okay will do", "okay will do"]
-conversation_sql_query, conversation_reference_message = chat_assistant.combine_messages(user_messages, assistant_messages)
+current_summary = [""]
+new_query_results = [""]
+conversation_sql_query, conversation_reference_message = chat_assistant.combine_messages(user_messages, assistant_messages, current_summary, new_query_results)
 
 # Function 1
 result_function1 = chat_assistant.generate_sql_query(conversation_sql_query)
