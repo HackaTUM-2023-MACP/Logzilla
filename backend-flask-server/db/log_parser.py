@@ -20,18 +20,22 @@ def parse_log(log_data: str) -> List[LogEntry]:
     )
 
     entries = []
+    current_datetime = datetime.now()  # Get the current datetime
 
     # Split the log data into lines
     for line_number, line in enumerate(log_data.strip().split('\n')):
         match = log_pattern.match(line)
         if match:
-            # Convert the timestamp to a datetime object
+            # Parse the timestamp without the year (the logs don't have it)
             timestamp_str = match.group('timestamp')
             timestamp = datetime.strptime(timestamp_str, '%b %d %H:%M:%S')
 
-            # Create a LogEntry namedtuple from the regex groups
+            # Assign the current year or the previous year based on the current date
+            year = current_datetime.year if timestamp.replace(year=current_datetime.year) <= current_datetime else current_datetime.year - 1
+            timestamp = timestamp.replace(year=year)
+
             entry = LogEntry(
-                line_number=line_number+1, # Line numbers start at 1
+                line_number=line_number + 1,
                 timestamp=timestamp,
                 machine=match.group('machine'),
                 layer=match.group('layer'),
