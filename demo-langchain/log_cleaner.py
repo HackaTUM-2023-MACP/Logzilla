@@ -1,42 +1,19 @@
-from pathlib import Path
+def filter_log_file(input_file_path, output_file_path, relevant_words):
+    # Open input and output files
+    with open(input_file_path, 'r', encoding='utf-8') as input_file, \
+            open(output_file_path, 'w', encoding='utf-8') as output_file:
+        # Iterate through each line in the input file
+        for line in input_file:
+            # Check if any of the relevant words are in the line (case-insensitive)
+            if any(word.lower() in line.lower() for word in relevant_words):
+                # Write the line to the output file
+                output_file.write(line)
 
-dir_path = Path("/home/hackathon14/Logzilla/demo-langchain/logs")
+    print(f"Successfully edited the file. Output saved to {output_file_path}")
 
-file_name =  "test_log.out"
-file_path = Path(dir_path, file_name)
-write_path = Path(dir_path, "cleaned_" + file_name)
+# Example usage:
+input_file_path = '/mnt/c/Users/chwen/Desktop/Bewerbungen/Seminare, Challenges/2023-11 HackaTUM23/Logzilla/demo-langchain/logs/test_log1.out'
+output_file_path = 'cleaned_test_log1.out'
+relevant_words = ['error', 'ssh']  # Add more relevant words as needed. get them from the language model based on the request of the user!!!!
 
-words_to_keep = [
-    "ssh",
-    # "fail",
-    # "success",
-    # "enable",
-    # "error",
-]
-
-lines = []
-prev_line = None
-
-with open(file_path, "r") as f:
-    for line in f:
-        for word in words_to_keep:
-            if word in line:
-                # Keep the previous line for extra context
-                if prev_line is not None and prev_line not in lines:
-                   lines.append(prev_line)
-
-                # Add the current line
-                lines.append(line)
-
-                # Append line only once if the word we want is in there
-                break
-        prev_line = line
-
-with open(write_path, "w") as f:
-    for line in lines:
-        f.write(line)
-
-print(len(lines))
-
-    
-
+filter_log_file(input_file_path, output_file_path, relevant_words)
