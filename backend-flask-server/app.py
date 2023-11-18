@@ -1,6 +1,6 @@
 import os
 import time
-from flask import Flask, send_file, request
+from flask import Flask, send_file, request, g
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -9,8 +9,9 @@ from db import DatabaseConnection
 app = Flask(__name__)
 
 
+# TODO: Maybe refactor this into a pool?
 def create_db_connection():
-    """ Factory function to create a database connection """
+    """ Factory function to create a database connection."""
     return DatabaseConnection(
         password=os.environ['DB_PASSWORD'],
         user=os.environ.get('DB_USER', 'postgres'),
@@ -18,6 +19,11 @@ def create_db_connection():
         port=os.environ.get('DB_PORT', '5432'),
         dbname=os.environ.get('DB_NAME', 'postgres')
     )
+
+@app.before_request
+def before_request():
+    """Open a database connection before each request."""
+    g.db = create_db_connection()
 
 @app.route('/')
 def index():
@@ -52,11 +58,9 @@ def update_summary():
 def get_context():
     if request.method == 'POST':
         request_data = request.get_json()
-        target_row = request_data['target_row']
-
-        # TODO: Get the surrounding window of rows from the database
-
-        return {'context': []}
+        line_number = request_data['line_number']
+        context = g.db.get_context(line_number)
+        return {'context': context}
         
 
 # if __name__ == '__main__':

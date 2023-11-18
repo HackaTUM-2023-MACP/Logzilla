@@ -2,6 +2,14 @@ import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 class DatabaseConnection:
+    """Schema:
+        line_number SERIAL PRIMARY KEY,
+        timestamp TIMESTAMP,
+        machine VARCHAR(255),
+        layer VARCHAR(255),
+        message TEXT,
+        message_vector vector(768)
+    """
     def __init__(self, password, user="postgres", host='localhost', port='5432', dbname='postgres'):
         self.user = user
         self.password = password
@@ -29,6 +37,20 @@ class DatabaseConnection:
             if cur.description:
                 return cur.fetchall()
             return None
+        
+    # TODO: Currently returns everything, but we probably don't need the embedding vector on the frontend, so maybe remove?
+    def get_context(self, target_line_number, num_rows=10):
+        """Returns the surrounding window of rows from the database"""
+        with self.conn.cursor() as cur:
+            cur.execute(
+                f"""
+                SELECT * FROM log_entries
+                WHERE line_number >= {target_line_number - num_rows // 2}
+                AND line_number <= {target_line_number + num_rows // 2}
+                ORDER BY line_number ASC;
+                """
+            )
+            return cur.fetchall()
 
     def __enter__(self):
         return self
