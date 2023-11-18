@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-
 const UploadBox = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [isWaiting, setIsWaiting] = useState(false);
@@ -25,6 +24,8 @@ const UploadBox = () => {
 
       if (response.ok) {
         console.log('File uploaded successfully');
+        // TODO: Router
+        window.location.href = '/chat';
       } else {
         console.log('Failed to upload file');
       }
