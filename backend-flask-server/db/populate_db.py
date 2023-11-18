@@ -4,8 +4,8 @@ import tqdm
 import torch
 from transformers import AutoTokenizer, AutoModel
 
-from log_parser import parse_log
-from db import DatabaseConnection
+from .log_parser import parse_log
+from .db import DatabaseConnection
 
 def embed_message(msg, model_name):
     tokenizer = AutoTokenizer.from_pretrained(model_name)
@@ -17,6 +17,10 @@ def embed_message(msg, model_name):
     embeddings = outputs.last_hidden_state.mean(dim=1).squeeze().tolist()
 
     return embeddings
+
+def wipe_log_entries(db_connection):
+    db_connection.run_sql("DELETE FROM log_entries;")
+    db_connection.commit()
 
 # TODO (matoototo): Look into different embedding models
 def insert_log_entries(db_connection, log_entries, model_name="bert-base-uncased"):
@@ -33,7 +37,8 @@ def insert_log_entries(db_connection, log_entries, model_name="bert-base-uncased
 
     print("All log entries inserted successfully.")
 
-def insert_log_data(db_connection, log_data, model_name="bert-base-uncased"):
+def insert_log_data(db_connection, log_data, model_name="bert-base-uncased", wipe=True):
+    if wipe: wipe_log_entries(db_connection)
     parsed_entries = parse_log(log_data)
     insert_log_entries(db_connection, parsed_entries, model_name)
 
