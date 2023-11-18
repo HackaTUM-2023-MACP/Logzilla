@@ -43,7 +43,7 @@ class ChatAssistant:
 
 
 # Example usage:
-api_key = "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"
+api_key = "PUT API KEY KERE"
 chat_assistant = ChatAssistant(api_key)
 
 # Combine messages to conversation context
