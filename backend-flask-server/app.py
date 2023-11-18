@@ -1,8 +1,23 @@
+import os
 import time
 from flask import Flask, send_file, request
+from dotenv import load_dotenv
+load_dotenv()
+
+from db import DatabaseConnection
 
 app = Flask(__name__)
 
+
+def create_db_connection():
+    """ Factory function to create a database connection """
+    return DatabaseConnection(
+        password=os.environ['DB_PASSWORD'],
+        user=os.environ.get('DB_USER', 'postgres'),
+        host=os.environ.get('DB_HOST', 'localhost'),
+        port=os.environ.get('DB_PORT', '5432'),
+        dbname=os.environ.get('DB_NAME', 'postgres')
+    )
 
 @app.route('/')
 def index():
@@ -13,7 +28,7 @@ def index():
 # with any possible routes used by the React side. E.g. "/api/time" instead of "/time".
 @app.route('/api/time')
 def get_current_time():
-    return {'time': time.time()}')
+    return {'time': time.time()}
 
 
 @app.route('/api/upload', methods=['POST'])

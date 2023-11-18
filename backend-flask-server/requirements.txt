@@ -3,3 +3,4 @@ gunicorn
 torch
 psycopg2-binary
 transformers
+python-dotenv
