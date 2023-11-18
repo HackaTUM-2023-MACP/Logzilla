@@ -60,22 +60,24 @@ const ChatComponent = ({ className }) => {
     <div className={`max-w-md mx-auto p-4 bg-gray-100 rounded-md shadow-md ${className}`}>
       <div className="h-64 overflow-y-auto mb-4">
         {userMessages.map((message, index) => (
-          <Message
-            key={`user-${index}`}
-            isSent={true}
-            message={message}
-            senderName="You"
-            profilePicture="your_profile_picture_url"
-          />
-        ))}
-        {botMessages.map((message, index) => (
-          <Message
-            key={`bot-${index}`}
-            isSent={false}
-            message={message}
-            senderName="Bot"
-            profilePicture="bot_profile_picture_url"
-          />
+          <>
+            <Message
+              key={`user-${index}`}
+              isSent={true}
+              message={message}
+              senderName="You"
+              profilePicture="your_profile_picture_url"
+            />
+            {botMessages[index] && (
+              <Message
+                key={`bot-${index}`}
+                isSent={false}
+                message={botMessages[index]}
+                senderName="Bot"
+                profilePicture="bot_profile_picture_url"
+              />
+            )}
+          </>
         ))}
       </div>
       <div className="flex">
@@ -96,6 +98,7 @@ const ChatComponent = ({ className }) => {
       </div>
     </div>
   );
-};
+}
+
 
 export default ChatComponent;
