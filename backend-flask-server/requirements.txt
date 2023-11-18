@@ -1,2 +1,5 @@
 flask
 gunicorn
+torch
+psycopg2-binary
+transformers
