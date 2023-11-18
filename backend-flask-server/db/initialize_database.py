@@ -13,6 +13,7 @@ def create_db_and_table(user: str, password: str, host: str = 'localhost', port:
     # Create table with an additional column for vector embedding
     cur.execute("""
         CREATE TABLE log_entries (
+            line_number SERIAL PRIMARY KEY,
             timestamp TIMESTAMP,
             machine VARCHAR(255),
             layer VARCHAR(255),

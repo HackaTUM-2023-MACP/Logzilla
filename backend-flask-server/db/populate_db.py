@@ -28,9 +28,9 @@ def insert_log_entries(user, password, host, port, log_entries, model_name="bert
         embeddings = embed_message(log_entry.message, model_name)
 
         cur.execute("""
-            INSERT INTO log_entries (timestamp, machine, layer, message, message_vector)
-            VALUES (%s, %s, %s, %s, %s);
-        """, (log_entry.timestamp, log_entry.machine, log_entry.layer, log_entry.message, embeddings))
+            INSERT INTO log_entries (line_number, timestamp, machine, layer, message, message_vector)
+            VALUES (%s, %s, %s, %s, %s, %s);
+        """, (log_entry.line_number, log_entry.timestamp, log_entry.machine, log_entry.layer, log_entry.message, embeddings))
 
         conn.commit()
 

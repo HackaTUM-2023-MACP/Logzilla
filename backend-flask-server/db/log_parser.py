@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import NamedTuple, List
 
 class LogEntry(NamedTuple):
+    line_number: int
     timestamp: datetime
     machine: str
     layer: str
@@ -21,7 +22,7 @@ def parse_log(log_data: str) -> List[LogEntry]:
     entries = []
 
     # Split the log data into lines
-    for line in log_data.strip().split('\n'):
+    for line_number, line in enumerate(log_data.strip().split('\n')):
         match = log_pattern.match(line)
         if match:
             # Convert the timestamp to a datetime object
@@ -30,6 +31,7 @@ def parse_log(log_data: str) -> List[LogEntry]:
 
             # Create a LogEntry namedtuple from the regex groups
             entry = LogEntry(
+                line_number=line_number+1, # Line numbers start at 1
                 timestamp=timestamp,
                 machine=match.group('machine'),
                 layer=match.group('layer'),
