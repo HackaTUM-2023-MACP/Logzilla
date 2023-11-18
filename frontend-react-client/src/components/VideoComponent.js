@@ -4,7 +4,7 @@ const VideoComponent = () => {
   const [selectedOption, setSelectedOption] = useState('');
   const [videoSrc, setVideoSrc] = useState('');
 
-  const handleRunClick = async () => {
+const handleRunClick = async () => {
     try {
       const response = await fetch('/generate', {
         method: 'POST',
@@ -13,12 +13,16 @@ const VideoComponent = () => {
         },
         body: JSON.stringify({ option: selectedOption }),
       });
-      const data = await response.json();
-      setVideoSrc(data.mp4Url);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      // Read the response as a blob
+      const blob = await response.blob();
+      // Create a local URL for the blob to be used as a source for the video
+      const videoUrl = URL.createObjectURL(blob);
+      setVideoSrc(videoUrl);
     } catch (error) {
       console.error('There was an error fetching the MP4 file:', error);
-      // Just temporary until we have proper video logic on backend
-      setVideoSrc(`${process.env.PUBLIC_URL}/test.mp4`)
     }
   };
 
