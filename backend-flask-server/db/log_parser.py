@@ -10,6 +10,11 @@ class LogEntry(NamedTuple):
     layer: str
     message: str
 
+def unify_layers(text):
+    # Replace all layers of the form "identifier[0]" with "identifier"
+    pattern = re.compile(r"(\w+)\[\d+\]")
+    return pattern.sub(r"\1", text)
+
 def parse_log(log_data: str) -> List[LogEntry]:
     # Regex pattern for matching the log entry format
     log_pattern = re.compile(
@@ -38,7 +43,7 @@ def parse_log(log_data: str) -> List[LogEntry]:
                 line_number=line_number + 1,
                 timestamp=timestamp,
                 machine=match.group('machine'),
-                layer=match.group('layer'),
+                layer=unify_layers(match.group('layer')),
                 message=match.group('message')
             )
             entries.append(entry)
