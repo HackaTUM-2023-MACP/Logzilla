@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Message from './Message'; // Make sure to provide the correct path to the Message component
 
-const ChatComponent = () => {
+const ChatComponent = ({ className }) => {
   const [userMessages, setUserMessages] = useState([]);
   const [botMessages, setBotMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
@@ -57,7 +57,7 @@ const ChatComponent = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto p-4 bg-gray-100 rounded-md shadow-md">
+    <div className={`max-w-md mx-auto p-4 bg-gray-100 rounded-md shadow-md ${className}`}>
       <div className="h-64 overflow-y-auto mb-4">
         {userMessages.map((message, index) => (
           <Message

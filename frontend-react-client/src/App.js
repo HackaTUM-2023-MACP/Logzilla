@@ -2,8 +2,8 @@ import React from 'react';
 import { BrowserRouter, Link, Routes, Route } from 'react-router-dom';
 import './App.css';
 import HomePage from './pages/homePage';
-import chatPage from './pages/chatPage';
-import Navbar from './components/navbar';
+import ChatPage from './pages/chatPage';
+import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
 
@@ -18,7 +18,7 @@ function App() {
         <Navbar height={navbarHeight}/>
         <Routes>
           <Route path="/" element={<HomePage navbarHeight={navbarHeight} footerHeight={footerHeight}/>} />
-          <Route path="/chat" Component={chatPage}/>
+          <Route path="/chat" element={<ChatPage navbarHeight={navbarHeight} footerHeight={footerHeight}/>} />
         </Routes>
         <Footer height={footerHeight}/>
       </BrowserRouter>
