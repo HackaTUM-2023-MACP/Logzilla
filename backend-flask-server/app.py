@@ -4,11 +4,13 @@ from dotenv import load_dotenv
 from db import DatabaseConnection
 from flask import Flask, send_file, request, jsonify, g
 
+from db import insert_log_data
+
 load_dotenv()
 
 app = Flask(__name__)
 
-UPLOAD_FOLDER = 'uploads'
+UPLOAD_FOLDER = './uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
@@ -80,13 +82,23 @@ def get_chat_response():
 def upload_file():
     try:
         file = request.files['file']
-        # TODO: Save the uploaded file and perform any necessary processing
-        filename = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-        file.save(filename)
-        
-        return {'message': 'File uploaded successfully', 'success': True, 'filename': file.filename}
+        if file:
+            time_prefix = str(time.time()).replace('.', '')
+            filename = os.path.join(app.config['UPLOAD_FOLDER'], f"{time_prefix}_{file.filename}")
+            file.save(filename)
+
+            with open(filename, 'r') as logfile:
+                log_data = logfile.read()
+            
+            insert_log_data(g.db, log_data)
+            os.remove(filename)
+            return {'message': 'File uploaded and log entries inserted successfully', 'success': True, 'filename': file.filename}
+        else:
+            print('No file was uploaded')
+            return {'message': 'No file was uploaded', 'success': False}
         
     except Exception as e:
+        print(f'Error uploading file: {e}')
         return {'error': str(e)}
 
 

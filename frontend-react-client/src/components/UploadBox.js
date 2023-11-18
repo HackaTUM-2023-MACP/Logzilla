@@ -1,11 +1,43 @@
 import React, { useState, useRef } from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-
 const UploadBox = () => {
   const [isDragging, setIsDragging] = useState(false);
+  const [isWaiting, setIsWaiting] = useState(false);
   const [filePath, setFilePath] = useState(null); // New state variable for file path
   const fileInputRef = useRef(null);
+
+  const uploadFile = async (e) => {
+    const files = e.dataTransfer.files;
+    if (!files.length) return;
+    const file = files[0];
+    try {
+      setIsWaiting(true);
+      setFilePath(file.name);
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        console.log('File uploaded successfully');
+        // TODO: Router
+        window.location.href = '/chat';
+      } else {
+        console.log('Failed to upload file');
+      }
+      setIsWaiting(false);
+    }
+
+    catch (error) {
+      console.log('Error occurred while uploading file:', error);
+    }
+
+
+  };
 
   const handleDragEnter = (e) => {
     e.preventDefault();
@@ -24,30 +56,7 @@ const UploadBox = () => {
   const handleDrop = async (e) => {
     e.preventDefault();
     setIsDragging(false);
-
-    const files = e.dataTransfer.files;
-
-    const formData = new FormData();
-    for (let i = 0; i < files.length; i++) {
-      formData.append('file', files[i]);
-    }
-
-    // Upload files now
-    try {
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (response.ok) {
-        setFilePath(files[0].name); // Set the file path upon successful upload
-        console.log('Files uploaded successfully');
-      } else {
-        console.log('Failed to upload files');
-      }
-    } catch (error) {
-      console.log('Error occurred while uploading files:', error);
-    }
+    await uploadFile(e);
   };
 
   const handleBoxClick = () => {
@@ -55,29 +64,7 @@ const UploadBox = () => {
   };
 
   const handleFileInputChange = async (e) => {
-    const files = e.target.files;
-
-    const formData = new FormData();
-    for (let i = 0; i < files.length; i++) {
-      formData.append('file', files[i]);
-    }
-
-    // Upload files now
-    try {
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (response.ok) {
-        setFilePath(files[0].name); // Set the file path upon successful upload
-        console.log('Files uploaded successfully');
-      } else {
-        console.log('Failed to upload files');
-      }
-    } catch (error) {
-      console.log('Error occurred while uploading files:', error);
-    }
+    await uploadFile(e);
   };
 
   return (
@@ -99,7 +86,7 @@ const UploadBox = () => {
           onChange={handleFileInputChange}
         />
         <div className="text-center">
-          {filePath ? (
+          {isWaiting ? (
             <div>
               <p className="text-4xl font-bold mb-10">{filePath}</p>
               <p className='mb-5'>Processing</p>
