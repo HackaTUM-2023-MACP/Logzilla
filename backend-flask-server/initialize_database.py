@@ -2,21 +2,10 @@ import argparse
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
-def create_db_and_table(dbname: str, user: str, password: str, host: str = 'localhost', port: str = '5432'):
+def create_db_and_table(user: str, password: str, host: str = 'localhost', port: str = '5432'):
     # Connect to PostgreSQL server
     conn = psycopg2.connect(dbname='postgres', user=user, password=password, host=host, port=port)
     conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
-
-    # Create cursor
-    cur = conn.cursor()
-
-    # Create database
-    cur.execute(f'CREATE DATABASE {dbname};')
-    print(f"Database '{dbname}' created successfully")
-
-    # Connect to the new database
-    conn.close()
-    conn = psycopg2.connect(dbname=dbname, user=user, password=password, host=host, port=port)
     cur = conn.cursor()
 
     cur.execute("CREATE EXTENSION IF NOT EXISTS vector;")
@@ -40,7 +29,6 @@ def create_db_and_table(dbname: str, user: str, password: str, host: str = 'loca
 if __name__ == "__main__":
     # Set up argparse
     parser = argparse.ArgumentParser(description="Set up the PostgreSQL database and table for log entries.")
-    parser.add_argument("--dbname", required=True, help="The name of the database.")
     parser.add_argument("--user", required=True, help="The username for the database.")
     parser.add_argument("--password", required=True, help="The password for the database.")
     parser.add_argument("--host", default="localhost", help="The host of the database.")
@@ -49,4 +37,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Create the database and table
-    create_db_and_table(args.dbname, args.user, args.password, args.host, args.port)
+    create_db_and_table(args.user, args.password, args.host, args.port)
