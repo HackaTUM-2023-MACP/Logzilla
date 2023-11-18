@@ -1,12 +1,15 @@
 import os
 import time
-from flask import Flask, send_file, request, g
 from dotenv import load_dotenv
+from db import DatabaseConnection
+from flask import Flask, send_file, request, jsonify, g
+
 load_dotenv()
 
-from db import DatabaseConnection
-
 app = Flask(__name__)
+
+UPLOAD_FOLDER = 'uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 # TODO: Maybe refactor this into a pool?
@@ -37,11 +40,6 @@ def get_current_time():
     return {'time': time.time()}
 
 
-@app.route('/api/upload', methods=['POST'])
-def upload_file():
-    # TODO: Saves the log file and initiates the parsing/embedding process
-    return {'success': True}
-
 @app.route('/api/summary', methods=['POST'])
 def update_summary():
     if request.method == 'POST':
@@ -63,5 +61,35 @@ def get_context():
         return {'context': context}
         
 
-# if __name__ == '__main__':
-#     app.run(debug=True)
+
+@app.route('/api/response', methods=['POST'])
+def get_chat_response():
+    try:
+        data = request.json
+        user_msgs = data.get('userMessages', [])  
+        bot_msgs = data.get('botMessages', [])  
+
+        bot_msgs.append('This is a test message from the backend server.')
+
+        return {'botMessages': bot_msgs, 'userMessages': user_msgs}
+    except Exception as e:
+        return {'error': str(e)}
+
+
+@app.route('/api/upload', methods=['POST'])
+def upload_file():
+    try:
+        file = request.files['file']
+        # TODO: Save the uploaded file and perform any necessary processing
+        filename = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+        file.save(filename)
+        
+        return {'message': 'File uploaded successfully', 'success': True, 'filename': file.filename}
+        
+    except Exception as e:
+        return {'error': str(e)}
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
+

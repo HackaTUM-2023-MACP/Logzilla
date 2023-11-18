@@ -1,20 +1,26 @@
 import React from 'react';
 import { BrowserRouter, Link, Routes, Route } from 'react-router-dom';
 import './App.css';
-import HomePage from './pages/home';
-import Page2 from './pages/page2';
+import HomePage from './pages/homePage';
+import chatPage from './pages/chatPage';
 import Navbar from './components/navbar';
+import Footer from './components/Footer';
+
 
 function App() {
-
+  
+  const navbarHeight = "48px";
+  const footerHeight = "48px";
+  
   return (
     <div className="bg-background min-h-screen">
-      <BrowserRouter className="flex h-full w-full"> 
-        <Navbar/>
+      <BrowserRouter className="flex h-full w-full justify-center items-center"> 
+        <Navbar height={navbarHeight}/>
         <Routes>
-          <Route path="/" Component={HomePage}/>
-          <Route path="/page2" Component={Page2}/>
+          <Route path="/" element={<HomePage navbarHeight={navbarHeight} footerHeight={footerHeight}/>} />
+          <Route path="/chat" Component={chatPage}/>
         </Routes>
+        <Footer height={footerHeight}/>
       </BrowserRouter>
     </div>
   );
