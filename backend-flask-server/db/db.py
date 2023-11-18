@@ -30,9 +30,9 @@ class DatabaseConnection:
         self.conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 
     # TODO (matoototo): maybe constrain to filtering by timestamp, machine, layer, etc and ordering by message similarity
-    def run_sql(self, sql):
+    def run_sql(self, sql, params=None):
         with self.conn.cursor() as cur:
-            cur.execute(sql)
+            cur.execute(sql, params)
             # Attempt to fetchall only if the cursor has results to fetch
             if cur.description:
                 return cur.fetchall()
@@ -51,6 +51,9 @@ class DatabaseConnection:
                 """
             )
             return cur.fetchall()
+
+    def commit(self):
+        self.conn.commit()
 
     def __enter__(self):
         return self
