@@ -38,7 +38,7 @@
     ]
   },
   "__COMMENT__": "Configure react to redirect any requests it receives on its port 3000 that it does not understand into another server. Source: https://blog.miguelgrinberg.com/post/how-to-create-a-react--flask-project.",
-  "proxy": "http://localhost:4000",
+  "proxy": "http://localhost:5000",
   "devDependencies": {
     "tailwindcss": "^3.3.5"
   }
