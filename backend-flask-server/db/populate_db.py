@@ -60,9 +60,23 @@ def insert_log_entries(db_connection, log_entries, model_name="bert-base-uncased
 
     print("All log entries inserted successfully.")
 
-def insert_log_data(db_connection, log_data, model_name="bert-base-uncased", wipe=True):
+def filter_log_entries(log_entries, whitelist=None, blacklist=None):
+    if whitelist is None and blacklist is None:
+        return log_entries
+
+    filtered_entries = []
+    for entry in log_entries:
+        if whitelist is not None and entry.layer not in whitelist:
+            continue
+        if blacklist is not None and entry.layer in blacklist:
+            continue
+        filtered_entries.append(entry)
+    return filtered_entries
+
+def insert_log_data(db_connection, log_data, model_name="bert-base-uncased", whitelist=None, blacklist=None, wipe=True):
     if wipe: wipe_log_entries(db_connection)
     parsed_entries = parse_log(log_data)
+    parsed_entries = filter_log_entries(parsed_entries, whitelist, blacklist)
     batch_insert_log_entries(db_connection, parsed_entries, model_name)
 
 def main():
