@@ -3,6 +3,7 @@ import time
 from dotenv import load_dotenv
 from db import DatabaseConnection
 from flask import Flask, send_file, request, jsonify, g
+import ChatAssistant from query_generator
 
 from db import insert_log_data, parse_log
 
@@ -47,10 +48,13 @@ def update_summary():
     if request.method == 'POST':
         data = request.get_json()
         current_summary = data.get('currentSummary')
-        top_k_log_refs = data.get('topKLogRefs')
+        top_k_log_refs = data.get('topKLogRefs') # best k log rows (list of strings)
+
+        api_key = "PUT API KEY KERE"
+        chat_assistant = ChatAssistant(api_key)
 
         # TODO: Pass the current_summary and update_message to the model, which re-queries the database and returns an updated summary
-        updated_summary = current_summary  # Replace with actual update logic
+        updated_summary = chat_assistant  # Replace with actual update logic
         
         # <myref rowNo="12" rowScore="0.24" rowText="This is a log row" rowContext=""/>
 #         updated_summary = """
@@ -89,6 +93,13 @@ def get_chat_response():
         data = request.json
         user_msgs = data.get('userMessages', [])  
         bot_msgs = data.get('botMessages', [])  
+
+        api_key = "PUT API KEY KERE"
+        chat_assistant = ChatAssistant(api_key)
+        conversation = chat_assistant.combine_messages(user_msgs, bot_msgs, [""], [""])
+        
+        sql_query = chat_assistant.generate_sql_query(conversation)
+        reference_message = chat_assistant.generate_reference_message(conversation)
 
         bot_msgs.append('This is a test message from the backend server.')
 

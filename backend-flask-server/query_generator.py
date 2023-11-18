@@ -26,17 +26,29 @@ class ChatAssistant:
         )
         return completion
 
+    def update_summary(self, conversation):
+        completion = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo", 
+            messages=conversation
+        )
+        return completion
 
     def combine_messages(self, user_content_list, assistant_content_list, current_summary, new_query_results):
-        conversation_chat_response = [{"role": "system", "content": current_summary}]
+        summary_update_input = current_summary + " " + new_query_results
+        conversation_summary_update = [{"role": "system", "content": summary_update_input}]
+        conversation_chat_response = [{"role": "system", "content": ""}]
         conversation_sql_query = [{"role": "system", "content": "You are only allowed to reply with an SQL query. For filtering, only use fuzzy matching and never include the message in the query. The database table has the following columns: timestamp TIMESTAMP, machine VARCHAR(255), layer VARCHAR(255), message TEXT, message_vector vector(768). "}]
         conversation_reference_message = [{"role": "system", "content": "Please reply only with a possible message that we should look for in a system logfile to find the answers to the user's prompt."}]
 
         for i in range(max(len(user_content_list), len(assistant_content_list))):
             if i < len(user_content_list):
+                conversation_summary_update.append({"role": "user", "content": user_content_list[i]})
+                conversation_chat_response.append({"role": "user", "content": user_content_list[i]})
                 conversation_sql_query.append({"role": "user", "content": user_content_list[i]})
                 conversation_reference_message.append({"role": "user", "content": user_content_list[i]})
             if i < len(assistant_content_list):
+                conversation_summary_update.append({"role": "assistant", "content": assistant_content_list[i]})
+                conversation_chat_response.append({"role": "assistant", "content": assistant_content_list[i]})
                 conversation_sql_query.append({"role": "assistant", "content": assistant_content_list[i]})
                 conversation_reference_message.append({"role": "assistant", "content": assistant_content_list[i]})
 
