@@ -169,7 +169,7 @@ const UploadBox = () => {
                 onChange={handleSearchChange}
                 className="mb-10 p-2 border rounded w-80"
               />
-              <div style={{"height": "600px"}} className='masked-container'>
+              <div style={{"height": "400px"}} className='masked-container'>
                 {filteredTags.map((tag) => (
                   <button
                     className={`tagButton cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mr-5 mb-5 ${selectedButtons.includes(tag) ? 'selectedTag' : ''}`}
