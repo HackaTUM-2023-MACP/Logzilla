@@ -1,6 +1,7 @@
 import openai
 from itertools import zip_longest
 import json
+import re
 
 
 class ChatAssistant:
@@ -21,7 +22,7 @@ class ChatAssistant:
                     
                     Your answer must be exactly in the following format and contain nothing else: {"sql_query": <SQL QUERY FILTER COMMAND>, "reference_entry": <REFERENCE MESSAGE IN THE LOG FILE>, "chat_response": <CHAT RESPONSE TO THE USER>}
                     
-                    Use fuzzy matching in the sql_query. Available columns: timestamp TIMESTAMP, machine VARCHAR(255), layer VARCHAR(255), message TEXT, message_vector vector(768)
+                    Use fuzzy matching in the sql_query. Available columns: timestamp TIMESTAMP, machine VARCHAR(255), layer VARCHAR(255), message TEXT
                     
                     The reference_entry should be an example message from the log file that the user may look for based on his questions.
                     
@@ -41,6 +42,7 @@ class ChatAssistant:
                 model="gpt-3.5-turbo-16k",
                 messages=conversation_prompt
             )
+            client.close()
             
             result_json = response.choices[0].message.content
             result_dict = json.loads(result_json)
@@ -90,7 +92,6 @@ class ChatAssistant:
     def generate_initial_summary(self, reference_rows):
         # This code is for v1 of the openai package: pypi.org/project/openai
         client = openai.OpenAI(api_key=self.api_key)
-
         response = client.chat.completions.create(
             model="gpt-3.5-turbo-1106",
             messages=[
@@ -113,12 +114,13 @@ class ChatAssistant:
             frequency_penalty=0,
             presence_penalty=0
         )
-        
+       
         initial_summary = response.choices[0].message.content
         replaced_summary = self.replace_references(initial_summary, reference_rows)
 
+        client.close()
         return replaced_summary
-    
+     
     def update_summary(self, reference_rows, summary):
         # This code is for v1 of the openai package: pypi.org/project/openai
         client = openai.OpenAI(api_key=self.api_key)
@@ -155,3 +157,14 @@ class ChatAssistant:
         replaced_summary = self.replace_references(updated_summary, reference_rows)
 
         return replaced_summary
+    
+
+def remove_myref(text):
+    """
+    Removes all the <myref> tags from the input text using regex and returns the clean text.
+    """
+    # Regex pattern to find <myref ... rowText="..." ... ></myref> and capture the rowText content
+    pattern = r'<myref [^>]*?rowText="([^"]+)"[^>]*?>.*?</myref>'
+    # Replacing the pattern with the captured rowText content
+    clean_text = re.sub(pattern, r'\1', text)
+    return clean_text
