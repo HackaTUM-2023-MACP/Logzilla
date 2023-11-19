@@ -4,9 +4,10 @@ import RowReference from './RowReference';
 import rehypeRaw from 'rehype-raw';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import TopKLogContext from './TopKLogContext';
+import interpolateHexColors from './utils';
 
 const SummaryBox = ({ className }) => {
-  const { topKLogRefs, summary, setSummary } = useContext(TopKLogContext);
+  const { topKLogRefs, setTopKLogRefs, summary, setSummary } = useContext(TopKLogContext);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -46,6 +47,27 @@ const SummaryBox = ({ className }) => {
           }}
           rehypePlugins={[rehypeRaw]}
         />
+        <p className='font-bold mb-3 mt-5 text-lg font-mono'>Relevant Rows</p>
+        <div className="m-2">
+          <table className="w-full border-collapse border border-borderColor rounded-lg overflow-hidden">
+            <thead>
+              <tr className="rowReferenceHeader">
+                <th className="border p-0.5">Row</th>
+                <th className="border p-0.5">Log Message</th>
+                <th className="border p-0.5">Retrieval Score</th>
+              </tr>
+            </thead>
+            { topKLogRefs !== undefined ? <tbody>
+              {topKLogRefs.map((row, index) => (
+                <tr key={index} className={index % 2 === 0 ? 'rowReferenceBodyEven' : 'rowReferenceBodyOdd'}>
+                  <td className="border p-0.5 text-center">{row.rowNo}</td>
+                  <td className="border p-0.5">{row.msg}</td>
+                  <td className="border p-0.5 text-center" style={{color: interpolateHexColors("#FF0000", "#00FF00", row.score)}}>{row.score}</td>
+                </tr>
+              ))}
+            </tbody> : null }
+          </table>
+        </div>
       </div>
     </div>
   );
