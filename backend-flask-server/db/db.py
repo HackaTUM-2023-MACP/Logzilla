@@ -85,6 +85,22 @@ class DatabaseConnection:
         LIMIT {top_k};
         """
         return self.run_sql(sql)
+    
+    def query_with_reference_and_sql(self, message, sql_str, model_name="bert-base-uncased", top_k=10):
+        # Embed the input message
+        message_embedding = embed_message(message, model_name)
+        message_embedding_str = ','.join([str(e) for e in message_embedding])
+
+        # Perform a dot product similarity search
+        sql = f"""
+        SELECT line_number, timestamp, machine, layer, message, 1 - (message_vector <=> '[{message_embedding_str}]') AS similarity
+        FROM log_entries
+        WHERE {sql_str}  -- Add the filtering condition here
+        ORDER BY 1 - (message_vector <=> '[{message_embedding_str}]') DESC
+        LIMIT {top_k};
+        """
+        return self.run_sql(sql)
+
 
     def __enter__(self):
         return self
@@ -107,7 +123,8 @@ def main():
     args = parser.parse_args()
 
     with DatabaseConnection(args.password, args.user, args.host, args.port, args.dbname) as db:
-        print(db.query_with_reference("error: kex_exchange_identification: Connection closed by remote host"))
+        # print(db.query_with_reference("error: kex_exchange_identification: Connection closed by remote host"))
+        print(db.query_with_reference_and_sql("BIOS-provided physical RAM map", "layer = 'kernel'"))
         # result = db.run_sql(args.sql)
         # if result:
         #     for row in result:

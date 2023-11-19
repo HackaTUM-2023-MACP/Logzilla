@@ -30,6 +30,8 @@ def create_db_connection():
 def before_request():
     """Open a database connection before each request."""
     g.db = create_db_connection()
+    OPENAI_KEY = os.environ.get('OPENAI_KEY')
+    g.chat_assistant = ChatAssistant(OPENAI_KEY)
 
 @app.route('/')
 def index():
@@ -89,21 +91,32 @@ def get_context():
 
 @app.route('/api/response', methods=['POST'])
 def get_chat_response():
+
     try:
         data = request.json
         user_msgs = data.get('userMessages', [])  
         bot_msgs = data.get('botMessages', [])  
-
-        api_key = "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"
-        chat_assistant = ChatAssistant(api_key)
         
-        # sql_query = chat_assistant.generate_sql_query(user_msgs, bot_msgs)
-        # reference_message = chat_assistant.generate_reference_message(user_msgs, bot_msgs)
-        chat_response = chat_assistant.generate_chat_response(user_msgs, bot_msgs)
+        sql_str, reference_str, response_str = g.chat_assistant.user_msg_to_sql_and_reference_and_response(user_msgs, bot_msgs)
 
-        bot_msgs.append('Response: ' + chat_response)
+        # If the SQL filter includes a WHERE clause, remove it and everything before.
+        if "WHERE" in sql_str:
+            sql_str = sql_str[sql_str.index("WHERE") + 6:]
+        
+        # List of tuples (row number, datetime.datetime, network, layer, msg, score)
+        filtered_rows = g.db.query_with_reference(reference_str, top_k=50)
+        filtered_rows = [{
+            'rowNo': row[0],
+            'datetime': row[1].strftime("%Y-%m-%d %H:%M:%S"),
+            'network': row[2],
+            'layer': row[3],
+            'msg': row[4],
+            'score': row[5]
+        } for row in filtered_rows]
+        
+        summary = "DUMMY SUMMARY FOR NOW"       # TODO
 
-        return {'botMessages': bot_msgs, 'userMessages': user_msgs}
+        return jsonify({'botResponse': response_str, 'filteredRows': filtered_rows, 'summary': summary})
     except Exception as e:
         return {'error': str(e)}
 
@@ -162,5 +175,5 @@ def get_log_layers():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=4000)
 
