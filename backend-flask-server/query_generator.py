@@ -62,7 +62,9 @@ class ChatAssistant:
             model="gpt-3.5-turbo", 
             messages=conversation_chat_response
         )
-        return completion
+        message_string = completion['choices'][0]['message']['content']
+    
+        return message_string
 
     def update_summary(self, user_content_list, assistant_content_list, current_summary, new_query_results):
         
