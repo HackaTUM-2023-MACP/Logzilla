@@ -1,6 +1,7 @@
 import openai
 from itertools import zip_longest
 import json
+import re
 
 
 class ChatAssistant:
@@ -21,7 +22,7 @@ class ChatAssistant:
                     
                     Your answer must be exactly in the following format and contain nothing else: {"sql_query": <SQL QUERY FILTER COMMAND>, "reference_entry": <REFERENCE MESSAGE IN THE LOG FILE>, "chat_response": <CHAT RESPONSE TO THE USER>}
                     
-                    Use fuzzy matching in the sql_query. Available columns: timestamp TIMESTAMP, machine VARCHAR(255), layer VARCHAR(255), message TEXT, message_vector vector(768)
+                    Use fuzzy matching in the sql_query. Available columns: timestamp TIMESTAMP, machine VARCHAR(255), layer VARCHAR(255), message TEXT
                     
                     The reference_entry should be an example message from the log file that the user may look for based on his questions.
                     
@@ -41,6 +42,7 @@ class ChatAssistant:
                 model="gpt-3.5-turbo",
                 messages=conversation_prompt
             )
+            client.close()
             
             result_json = response.choices[0].message.content
             result_dict = json.loads(result_json)
@@ -90,7 +92,6 @@ class ChatAssistant:
     def generate_initial_summary(self, reference_rows):
         # This code is for v1 of the openai package: pypi.org/project/openai
         client = openai.OpenAI(api_key=self.api_key)
-
         response = client.chat.completions.create(
             model="gpt-3.5-turbo-1106",
             messages=[
@@ -113,42 +114,28 @@ class ChatAssistant:
             frequency_penalty=0,
             presence_penalty=0
         )
-        
+       
         initial_summary = response.choices[0].message.content
         replaced_summary = self.replace_references(initial_summary, reference_rows)
 
+        client.close()
         return replaced_summary
-    
+     
     def update_summary(self, reference_rows, summary):
         # This code is for v1 of the openai package: pypi.org/project/openai
+        return self.generate_initial_summary(reference_rows)
         client = openai.OpenAI(api_key=self.api_key)
 
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo-1106",
+            model="gpt-3.5-turbo-16k",
             messages=[
                 {
-                "role": "system",
-                "content": f"""
-                    You are given a summary of a system log file as well as a list of new log messages. 
-                    Each log row has an associated reference number (denoted as [REF#] prefix) and a message. 
-                    If a section of your summary is based on a specific row, you can include it at the end of the 
-                    sentence but use that sparisngly. However, don't list a large number of references without much 
-                    text. If multiple messages refer to the same thing, only reference one of them. Keep existing 
-                    references where useful, otherwise remove them.
-                    For example:\n\n[REF530] Nov 10 05:49:37 localhost kernel: pci 0000:08:00.0: BAR 7: no space for 
-                    [mem size 0x00800000 64bit pref] -> \"... In localhost at the kernel layer, a message indicates that 
-                    there is a problem with allocating memory for a PCI (Peripheral Component Interconnect) device in 
-                    the system.[REF530] ...\"
-                    
-                    Please update the following summary with these rows only:\n\n{self._create_reference_message(reference_rows)}"""
-                },
-                {
                 "role": "user",
-                "content": f"This is the summary {summary}"
+                "content": f"You are given a summary of a system log file as well as a list of new log messages.\n Each log row has an associated reference number (denoted as [REF#] prefix) and a message. If a section of your summary is based on a specific row, you can include it at the end of the  sentence but use that sparingly.\n Keep existing references where useful, otherwise remove them. Please update the including information from these rows:\n{self._create_reference_message(reference_rows)}\nThis is the current summary: {remove_myref(summary)}"
                 },
             ],
             temperature=0,
-            max_tokens=512,
+            max_tokens=15000,
             top_p=1,
             frequency_penalty=0,
             presence_penalty=0
@@ -158,3 +145,14 @@ class ChatAssistant:
         replaced_summary = self.replace_references(updated_summary, reference_rows)
 
         return replaced_summary
+    
+
+def remove_myref(text):
+    """
+    Removes all the <myref> tags from the input text using regex and returns the clean text.
+    """
+    # Regex pattern to find <myref ... rowText="..." ... ></myref> and capture the rowText content
+    pattern = r'<myref [^>]*?rowText="([^"]+)"[^>]*?>.*?</myref>'
+    # Replacing the pattern with the captured rowText content
+    clean_text = re.sub(pattern, r'\1', text)
+    return clean_text
