@@ -80,6 +80,7 @@ def get_chat_response():
         data = request.json
         user_msgs = data.get('userMessages', [])  
         bot_msgs = data.get('botMessages', [])  
+        summary = data.get('summary', '')  
         
         sql_str, reference_str, response_str = g.chat_assistant.user_msg_to_sql_and_reference_and_response(user_msgs, bot_msgs)
 
@@ -98,9 +99,9 @@ def get_chat_response():
             'score': row[5]
         } for row in filtered_rows]
         
-        summary = "DUMMY SUMMARY FOR NOW"       # TODO
+        updated_summary = g.chat_assistant.update_summary(filtered_rows, summary)
 
-        return jsonify({'botResponse': response_str, 'filteredRows': filtered_rows, 'summary': summary})
+        return jsonify({'botResponse': response_str, 'filteredRows': filtered_rows, 'summary': updated_summary})
     except Exception as e:
         return {'error': str(e)}
 
@@ -159,5 +160,5 @@ def get_log_layers():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=4000)
+    app.run(debug=True, port=4000, threaded=False)
 

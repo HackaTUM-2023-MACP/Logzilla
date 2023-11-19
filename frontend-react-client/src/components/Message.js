@@ -23,7 +23,7 @@ const Message = ({ isSent, message, senderName, profilePicture }) => {
         <p className="text-sm font-semibold">{senderName}</p>
 
         {/* Message Text */}
-        <p className="text-sm">{message}</p>
+        <p className="text-md">{message}</p>
       </div>
     </div>
   );

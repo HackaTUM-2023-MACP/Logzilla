@@ -8,11 +8,13 @@ const Navbar = ({ height }) => {
       style={{ height: `${height}` }}
     > 
       <div className='flex justify-between w-full px-5 navbarContent'>
-        <div className='flex space-x-4 items-center'>
-          <img src='/logo512.png' alt='logo' className='h-14 w-14 p-1' />
-          <p className='font-bold font-mono text-xl'>Logzilla</p>
-        </div>
-        <div className='flex space-x-12 items-center pr-10'>
+        <Link to={'/'}>
+          <div className='flex space-x-4 items-center'>
+            <img src='/logo512.png' alt='logo' className='h-14 w-14 p-1' />
+            <p className='font-bold font-mono text-xl'>Logzilla</p>
+          </div>
+        </Link>
+        <div className='flex space-x-12 items-center pr-10 text-lg'>
           <Link className='hover:underline underline-offset-4' to='/'>
             Upload
           </Link>

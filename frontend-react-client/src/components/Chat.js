@@ -22,7 +22,8 @@ const ChatComponent = ({ className }) => {
         },
         body: JSON.stringify({ 
           userMessages: newUserMessages,
-          botMessages: botMessages
+          botMessages: botMessages,
+          summary: summary
         }),
       });
 
@@ -83,7 +84,7 @@ const ChatComponent = ({ className }) => {
       <div className="flex">
         <input
           type="text"
-          className="flex-grow p-2 border rounded-l-md focus:outline-none"
+          className="flex-grow p-2 pl-4 border rounded-l-md focus:outline-none"
           placeholder="Type a message..."
           value={inputMessage}
           onChange={(e) => setInputMessage(e.target.value)}
@@ -91,7 +92,7 @@ const ChatComponent = ({ className }) => {
           style={{ backgroundColor: '#282c34', border: 'none', color: 'white' }}
         />
         <button
-          className="bg-blue-500 text-white p-2 rounded-r-md hover:bg-blue-700"
+          className="bg-blue-500 text-white p-2 px-4 rounded-r-md hover:bg-blue-700"
           onClick={handleUserMessageSubmit}
         >
           Send

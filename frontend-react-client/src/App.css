@@ -53,31 +53,31 @@ body {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
-  width: 100vw;
-  margin: 0;
+  justify-content: space-between;
+  width: 75vw;
+  margin: auto;
   color: white;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.18);
   gap: 1em;
 }
 
 .summaryboxComponent {
-  min-height: 80vh;
-  max-height: 80vh;
+  min-height: 70vh;
+  max-height: 70vh;
   background-color: #1e2128;
   color: white;
 }
 
 .chatboxComponent {
-  min-height: 80vh;
-  max-height: 80vh;
+  min-height: 70vh;
+  max-height: 70vh;
   background-color: #1e2128;
   color: white;
 }
 
 .chatboxContent {
-  min-height: calc(80vh - 90px);
-  max-height: calc(80vh - 90px);
+  min-height: calc(70vh - 90px);
+  max-height: calc(70vh - 90px);
 }
 
 .rowReferenceHeader {

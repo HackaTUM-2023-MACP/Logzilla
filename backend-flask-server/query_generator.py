@@ -118,3 +118,43 @@ class ChatAssistant:
         replaced_summary = self.replace_references(initial_summary, reference_rows)
 
         return replaced_summary
+    
+    def update_summary(self, reference_rows, summary):
+        # This code is for v1 of the openai package: pypi.org/project/openai
+        client = openai.OpenAI(api_key=self.api_key)
+
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo-1106",
+            messages=[
+                {
+                "role": "system",
+                "content": f"""
+                    You are given a summary of a system log file as well as a list of new log messages. 
+                    Each log row has an associated reference number (denoted as [REF#] prefix) and a message. 
+                    If a section of your summary is based on a specific row, you can include it at the end of the 
+                    sentence but use that sparisngly. However, don't list a large number of references without much 
+                    text. If multiple messages refer to the same thing, only reference one of them. Keep existing 
+                    references where useful, otherwise remove them.
+                    For example:\n\n[REF530] Nov 10 05:49:37 localhost kernel: pci 0000:08:00.0: BAR 7: no space for 
+                    [mem size 0x00800000 64bit pref] -> \"... In localhost at the kernel layer, a message indicates that 
+                    there is a problem with allocating memory for a PCI (Peripheral Component Interconnect) device in 
+                    the system.[REF530] ...\"
+                    
+                    Please update the following summary with these rows only:\n\n{self._create_reference_message(reference_rows)}"""
+                },
+                {
+                "role": "user",
+                "content": f"This is the summary {summary}"
+                },
+            ],
+            temperature=0,
+            max_tokens=512,
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0
+        )
+        
+        updated_summary = response.choices[0].message.content
+        replaced_summary = self.replace_references(updated_summary, reference_rows)
+
+        return replaced_summary

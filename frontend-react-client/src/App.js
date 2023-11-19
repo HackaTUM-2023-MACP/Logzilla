@@ -15,7 +15,7 @@ function App() {
   const [summary, setSummary] = useState('');
   const [logFileName, setLogFileName] = useState('');
   
-  const navbarHeight = "48px";
+  const navbarHeight = "52px";
   const footerHeight = "48px";
   
   return (
