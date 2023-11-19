@@ -105,21 +105,22 @@ class ChatAssistant:
         return conversation_sql_query, conversation_reference_message
 
 
-# Example usage:
-api_key = "PUT API KEY KERE"
-chat_assistant = ChatAssistant(api_key)
 
-# Combine messages to conversation context
-user_messages = ["Are there any ssh errors in the last 24 hours?", "sorry, I meant the last 48 hours"]
-assistant_messages = ["okay will do", "okay will do"]
-current_summary = [""]
-new_query_results = [""]
-conversation_sql_query, conversation_reference_message = chat_assistant.combine_messages(user_messages, assistant_messages, current_summary, new_query_results)
+if __name__ == "__main__":
+    # Example usage:
+    api_key = "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"
+    chat_assistant = ChatAssistant(api_key)
 
-# Function 1
-result_function1 = chat_assistant.generate_sql_query(conversation_sql_query)
-print(result_function1)
+    # Combine messages to conversation context
+    user_messages = ["Are there any ssh errors in the last 24 hours?", "sorry, I meant the last 48 hours"]
+    assistant_messages = ["okay will do", "okay will do"]
+    current_summary = [""]
+    new_query_results = [""]
 
-# Function 2
-result_function2 = chat_assistant.generate_reference_message(conversation_reference_message)
-print(result_function2)
+    # Function 1
+    result_function1 = chat_assistant.generate_chat_response(user_messages, assistant_messages)
+    print(result_function1)
+
+    # # Function 2
+    # result_function2 = chat_assistant.generate_reference_message(conversation_reference_message)
+    # print(result_function2)

@@ -3,7 +3,7 @@ import time
 from dotenv import load_dotenv
 from db import DatabaseConnection
 from flask import Flask, send_file, request, jsonify, g
-import ChatAssistant from query_generator
+from query_generator import ChatAssistant
 
 from db import insert_log_data, parse_log
 
@@ -94,14 +94,14 @@ def get_chat_response():
         user_msgs = data.get('userMessages', [])  
         bot_msgs = data.get('botMessages', [])  
 
-        api_key = "PUT API KEY KERE"
+        api_key = "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"
         chat_assistant = ChatAssistant(api_key)
-        conversation = chat_assistant.combine_messages(user_msgs, bot_msgs, [""], [""])
         
-        sql_query = chat_assistant.generate_sql_query(conversation)
-        reference_message = chat_assistant.generate_reference_message(conversation)
+        # sql_query = chat_assistant.generate_sql_query(user_msgs, bot_msgs)
+        # reference_message = chat_assistant.generate_reference_message(user_msgs, bot_msgs)
+        chat_response = chat_assistant.generate_chat_response(user_msgs, bot_msgs)
 
-        bot_msgs.append('This is a test message from the backend server.')
+        bot_msgs.append('Response: ' + chat_response)
 
         return {'botMessages': bot_msgs, 'userMessages': user_msgs}
     except Exception as e:
