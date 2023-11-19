@@ -57,6 +57,10 @@
   gap: 1em;
 }
 
+.minheight {
+  min-height: 200px;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

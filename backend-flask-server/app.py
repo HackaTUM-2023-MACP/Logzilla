@@ -52,14 +52,13 @@ def update_summary():
         current_summary = data.get('currentSummary')
         top_k_log_refs = data.get('topKLogRefs') # best k log rows (list of strings)
 
-        api_key = ""
-        chat_assistant = ChatAssistant(api_key)
+        chat_assistant = ChatAssistant(os.environ.get('OPENAI_KEY'))
 
         # TODO: Pass the current_summary and update_message to the model, which re-queries the database and returns an updated summary
         if current_summary.strip() == "":
             reference_rows = g.db.random_n(10)
             updated_summary = chat_assistant.generate_initial_summary(reference_rows)
-            print(updated_summary)
+            # print(updated_summary)
         
             return {'updatedSummary': updated_summary}
         else:

@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Markdown from 'react-markdown';
 import RowReference from './RowReference';
-import rehypeRaw from 'rehype-raw'
+import rehypeRaw from 'rehype-raw';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import TopKLogContext from './TopKLogContext';
 
-
-
 const SummaryBox = ({ className }) => {
-  const { topKLogRefs, setTopKLogRefs, summary, setSummary } = useContext(TopKLogContext);
+  const { topKLogRefs, summary, setSummary } = useContext(TopKLogContext);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setLoading(true); // Start loading
@@ -27,15 +27,19 @@ const SummaryBox = ({ className }) => {
         console.error('Error fetching summary:', error);
         setLoading(false); // Stop loading if there's an error
       });
-  }, []);
+  }, []); // Removed dependencies to only fetch on mount
 
   return (
-    <div className={`w-max-full p-5 text-lg overflow-scroll bg-slate-50 ${className}`}>
+    <div className={`relative w-max-full p-5 text-lg overflow-scroll bg-slate-50 ${className} minheight`}>
+      {loading && (
+        <div className="absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center bg-slate-50 bg-opacity-50 z-10">
+          <CircularProgress />
+        </div>
+      )}
       <Markdown
         children={summary}
         className={''}
         components={{
-          // MUST NOT be camelCase
           myref: ({ node, ...props }) => <RowReference {...props} />,
         }}
         rehypePlugins={[rehypeRaw]}
