@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Markdown from 'react-markdown';
 import RowReference from './RowReference';
 import rehypeRaw from 'rehype-raw'
+import TopKLogContext from './TopKLogContext';
+
 
 
 const SummaryBox = ({ className }) => {
-  const [summary, setSummary] = useState('');
-  const [topKLogRefs, setTopKLogRefs] = useState([]);
+  const { topKLogRefs, setTopKLogRefs, summary, setSummary } = useContext(TopKLogContext);
 
   useEffect(() => {
     fetch('/api/summary', {
@@ -28,10 +29,10 @@ const SummaryBox = ({ className }) => {
   console.log('summary:', summary);
 
   return (
-    <div className={`w-max-full h-full p-5 bg-slate-50 ${className}`}>
+    <div className={`w-max-full p-5 text-lg overflow-scroll bg-slate-50 ${className}`}>
       <Markdown
         children={summary}
-        className={'overflow-scroll'}
+        className={''}
         components={{
           // MUST NOT be camelCase
           myref: ({ node, ...props }) => <RowReference {...props} />,

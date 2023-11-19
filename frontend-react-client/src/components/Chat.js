@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Message from './Message'; // Make sure to provide the correct path to the Message component
+import TopKLogContext from './TopKLogContext';
+
 
 const ChatComponent = ({ className }) => {
   const [userMessages, setUserMessages] = useState([]);
   const [botMessages, setBotMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
+  const { topKLogRefs, setTopKLogRefs, summary, setSummary } = useContext(TopKLogContext);
 
   useEffect(() => {
     // Fetch initial messages from the server
@@ -42,9 +45,10 @@ const ChatComponent = ({ className }) => {
       });
 
       const data = await response.json();
-      const lastBotMessage = data.botMessages[data.botMessages.length - 1];
-      const newBotMessages = [...botMessages, lastBotMessage];
+      const newBotMessages = [...botMessages, data.botResponse];
       setBotMessages(newBotMessages);
+      setTopKLogRefs(data.filteredRows);
+      setSummary(data.summary);
     } catch (error) {
       console.error('Error sending user message:', error);
     }
