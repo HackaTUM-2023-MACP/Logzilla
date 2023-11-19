@@ -52,34 +52,19 @@ def update_summary():
         current_summary = data.get('currentSummary')
         top_k_log_refs = data.get('topKLogRefs') # best k log rows (list of strings)
 
-        api_key = "PUT API KEY KERE"
+        api_key = ""
         chat_assistant = ChatAssistant(api_key)
 
         # TODO: Pass the current_summary and update_message to the model, which re-queries the database and returns an updated summary
-        updated_summary = chat_assistant  # Replace with actual update logic
+        if current_summary.strip() == "":
+            reference_rows = g.db.random_n(10)
+            updated_summary = chat_assistant.generate_initial_summary(reference_rows)
+            print(updated_summary)
         
-        # <myref rowNo="12" rowScore="0.24" rowText="This is a log row" rowContext=""/>
-#         updated_summary = """
-# An unexpected error occurred while executing a critical process. The system suggests checking input parameters and ensuring the integrity of database connections.
-# <mycaption>My<mycaption/>
-# A warning has been logged indicating that resource usage has surpassed the defined threshold. It is advised to inspect resource allocation and optimize code for improved efficiency.
-# Positive feedback in the log reveals successful establishment of a database connection. The process involved initializing the connection pool and executing a query for data retrieval.
-# A critical entry notifies that the application crashed unexpectedly. It is imperative to investigate crash logs and thoroughly review recent code changes for potential issues.
-# The log records the completion of a system update. To ensure success, verify updated features and address any user-reported issues that may have surfaced.
-#         """.strip()
-        updated_summary = """
-An unexpected error occurred while executing a critical process. The system suggests checking input parameters and ensuring the integrity of database connections.
-<myref rowNo="22" rowScore="0.32" rowText="Critical: Application crashed unexpectedly" rowContext="Investigate crash logs #DELIMITER#Review recent code changes"></myref>
-A warning has been logged indicating that resource usage has surpassed the defined threshold. It is advised to inspect resource allocation and optimize code for improved efficiency.
-<myref rowNo="22" rowScore="0.32" rowText="Critical: Application crashed unexpectedly" rowContext="Investigate crash logs #DELIMITER#Review recent code changes"></myref>
-Positive feedback in the log reveals successful establishment of a database connection. The process involved initializing the connection pool and executing a query for data retrieval.
-<myref rowNo="31" rowScore="0.58" rowText="Critical: Application crashed unexpectedly" rowContext="Investigate crash logs #DELIMITER#Review recent code changes"></myref>
-A critical entry notifies that the application crashed unexpectedly. It is imperative to investigate crash logs and thoroughly review recent code changes for potential issues.
-<myref rowNo="42" rowScore="0.21" rowText="Information: System update completed" rowContext="Verify updated features #DELIMITER#Check for user-reported issues"></myref>
-The log records the completion of a system update. To ensure success, verify updated features and address any user-reported issues that may have surfaced.
-        """
+            return {'updatedSummary': updated_summary}
+        else:
+            return {'updatedSummary': current_summary}
 
-        return {'updatedSummary': updated_summary}
 
 @app.route('/api/get_context', methods=['POST'])
 def get_context():

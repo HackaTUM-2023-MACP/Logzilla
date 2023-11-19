@@ -10,6 +10,7 @@ const SummaryBox = ({ className }) => {
   const { topKLogRefs, setTopKLogRefs, summary, setSummary } = useContext(TopKLogContext);
 
   useEffect(() => {
+    setLoading(true); // Start loading
     fetch('/api/summary', {
       method: 'POST',
       headers: {
@@ -20,13 +21,13 @@ const SummaryBox = ({ className }) => {
       .then(response => response.json())
       .then(data => {
         setSummary(data.updatedSummary.trim());
+        setLoading(false); // Stop loading once data is received
       })
       .catch(error => {
         console.error('Error fetching summary:', error);
+        setLoading(false); // Stop loading if there's an error
       });
-  }, [summary, topKLogRefs]);
-
-  console.log('summary:', summary);
+  }, []);
 
   return (
     <div className={`w-max-full p-5 text-lg overflow-scroll bg-slate-50 ${className}`}>
@@ -43,4 +44,4 @@ const SummaryBox = ({ className }) => {
   );
 };
 
-export default SummaryBox
+export default SummaryBox;
