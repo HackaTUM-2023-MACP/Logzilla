@@ -3,7 +3,7 @@ import time
 from dotenv import load_dotenv
 from db import DatabaseConnection
 from flask import Flask, send_file, request, jsonify, g
-import ChatAssistant from query_generator
+from query_generator import ChatAssistant
 
 import torch
 import transformers
