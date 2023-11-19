@@ -89,7 +89,8 @@ def get_chat_response():
             sql_str = sql_str[sql_str.index("WHERE") + 6:]
         
         # List of tuples (row number, datetime.datetime, network, layer, msg, score)
-        filtered_rows = g.db.query_with_reference(reference_str, top_k=50)
+        print("SQL:", sql_str)
+        filtered_rows = g.db.query_with_reference(reference_str, top_k=1)
         filtered_rows = [{
             'rowNo': row[0],
             'datetime': row[1].strftime("%Y-%m-%d %H:%M:%S"),
@@ -99,10 +100,13 @@ def get_chat_response():
             'score': row[5]
         } for row in filtered_rows]
         
-        updated_summary = g.chat_assistant.update_summary(filtered_rows, summary)
+        print("Updating:", filtered_rows)
+        # updated_summary = g.chat_assistant.update_summary(filtered_rows, summary)
 
-        return jsonify({'botResponse': response_str, 'filteredRows': filtered_rows, 'summary': updated_summary})
+        # return jsonify({'botResponse': response_str, 'filteredRows': filtered_rows, 'summary': updated_summary})
+        return jsonify({'botResponse': response_str, 'filteredRows': filtered_rows, 'summary': summary})
     except Exception as e:
+        print("Error:", e)
         return {'error': str(e)}
 
 def write_and_readfile(file):
