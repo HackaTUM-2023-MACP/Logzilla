@@ -37,7 +37,7 @@ const RowReference = ({ ...props }) => {
         <div className="m-2">
           <table className="w-full border-collapse border border-borderColor rounded-lg overflow-hidden">
             <thead>
-              <tr className="bg-gray-200">
+              <tr className="rowReferenceHeader">
                 <th className="border p-0.5">Row</th>
                 <th className="border p-0.5">Log Message</th>
                 <th className="border p-0.5">Retrieval Score</th>
@@ -45,7 +45,7 @@ const RowReference = ({ ...props }) => {
             </thead>
             <tbody>
               {rows.map((row, index) => (
-                <tr key={index} className={index % 2 === 0 ? 'bg-gray-100 hover:bg-gray-300' : 'bg-white hover:bg-gray-300'}>
+                <tr key={index} className={index % 2 === 0 ? 'rowReferenceBodyEven' : 'rowReferenceBodyOdd'}>
                   <td className="border p-0.5 text-center">{row.number}</td>
                   <td className="border p-0.5">{row.text}</td>
                   <td className="border p-0.5 text-center" style={{color: color}}>{row.score}</td>

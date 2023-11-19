@@ -48,8 +48,8 @@ const ChatComponent = ({ className }) => {
   }, [botMessages]);
 
   return (
-    <div className={`max-w-md mx-auto p-4 bg-gray-100 rounded-md shadow-md ${className}`}>
-      <div className="h-64 overflow-y-auto mb-4">
+    <div className={`max-w-md mx-auto p-4 bg-gray-100 rounded-md shadow-md ${className} chatboxComponent`}>
+      <div className="h-64 overflow-y-auto mb-4 chatboxContent">
         {botMessages.length > 0 && (
           <Message
             key={`bot-initial`}
@@ -88,6 +88,7 @@ const ChatComponent = ({ className }) => {
           value={inputMessage}
           onChange={(e) => setInputMessage(e.target.value)}
           onKeyPress={handleKeyPress} // Add event listener for key press
+          style={{ backgroundColor: '#282c34', border: 'none', color: 'white' }}
         />
         <button
           className="bg-blue-500 text-white p-2 rounded-r-md hover:bg-blue-700"

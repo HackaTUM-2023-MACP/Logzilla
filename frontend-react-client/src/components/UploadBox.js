@@ -154,15 +154,15 @@ const UploadBox = () => {
         <div className="text-center">
           {isWaiting ? (
             <div>
-              <p className="text-4xl font-bold mb-10">{logFileName}</p>
-              <p className='mb-5'>Processing</p>
+              <p className="text-4xl text-white font-bold mb-10">{logFileName}</p>
+              <p className='text-white mb-5'>Processing</p>
               <CircularProgress/>
             </div>
           ) : (
             <>
-            <p hidden={tags.length > 0} className="text-4xl font-bold pointer-events-none">Drag and Drop Files to Upload</p>
+            <p hidden={tags.length > 0} className="text-4xl text-white font-bold pointer-events-none">Drag and Drop Files to Upload</p>
             <div hidden={tags.length == 0}>
-              <p className="text-4xl font-bold"  style={{"marginBottom": "1em"}}>What would you like to focus on?</p>
+              <p className="text-4xl text-white font-bold"  style={{"marginBottom": "1em"}}>What would you like to focus on?</p>
               {/* Search here that filters tags */}
               <input
                 type="text"
@@ -170,6 +170,7 @@ const UploadBox = () => {
                 value={searchTerm}
                 onChange={handleSearchChange}
                 className="mb-10 p-2 border rounded w-80"
+                style={{ backgroundColor: '#282c34', border: '1px solid white', color: 'white'}}
               />
               <div style={{"height": "400px"}} className='masked-container'>
                 {filteredTags.map((tag) => (
