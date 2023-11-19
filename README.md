@@ -1,16 +1,14 @@
 # Logzilla - Rohde & Schwarz Challenge
-> "A solution that will eat up your logs like Godzilla, and will talk to you about it"
+> "A solution that will eat up your logs like Godzilla, and will then talk to you about it"
 
-Libraries already included:
-```bash
-tailwindcss
-react-router-dom
-polished
-```
+This is a webapp that was part of the Rohde & Schwarz challenge track about "Summarizing and Chatting with log files" in hackaTUM 2023. Our solution allows the user to upload a log file and gives a short summary of it to inform the user and to inspire the user to ask further questions. Through an interactive experience with a chatbot, it keeps updating the dynamic summary depending on the user's interest and the conversation history so far.
 
-# Running
+The intelligent AI-powered system in the backend parses the logs, filters accordingly, and keeps track of a database generated from the initial file. The system predicts queries in parallel to the chat to retreive the most relevant entries from the database (which correspond to log rows) to then present them to the user and incorporate to the current summary iteratively.
 
-## In Development
+
+# 🏃Running
+
+## 🛠️In Development
 
 You need `Node.js` (to use `npm`) and `Python` with the required dependencies. On MacOS:
 ```bash
@@ -43,7 +41,7 @@ DANGEROUSLY_DISABLE_HOST_CHECK=true npm run start
 > 
 > The frontend listens to default port `3000`.
 
-## Deployment
+## 💻Deployment
 
 Using a Gunicorn server for the Python project, and nginx as a reverse proxy in front of it. All commands are run from the root directory.
 
@@ -64,7 +62,7 @@ docker build -f Dockerfile.frontend -t app-frontend .
 ```
 Running the backend Docker image for testing: `docker run --rm -p 4000:4000 app-backend`. Then navigate to `localhost:4000/`. Running the frontend image will result in a failure from nginx, which is not going to recognize the http://api:5000 proxy URL.
 
-### Deploying on GCP
+### ☁️Deploying on GCP
 
 - Choose a VM type, e.g. `e2-medium`.
 - Choose a boot disk. I like `Ubuntu 20.04 LTS`.
@@ -78,7 +76,7 @@ Running the backend Docker image for testing: `docker run --rm -p 4000:4000 app-
     - In `Protocols and Ports` check `TCP` and enter `3000` (or whatever port to expose)
     - Create the rule and apply the tag `<SOME_TAG_NAME>` to the VM instance.
 
-# References
+# 📑References
 
 Based on the [React + Flask + Docker tutorial](https://blog.miguelgrinberg.com/post/how-to-create-a-react--flask-project) from Miguel Grinberg. [Part2](https://blog.miguelgrinberg.com/post/how-to-deploy-a-react--flask-project), [Part3](https://blog.miguelgrinberg.com/post/how-to-deploy-a-react-router-flask-application), [Part4](https://blog.miguelgrinberg.com/post/how-to-dockerize-a-react-flask-project).
 
