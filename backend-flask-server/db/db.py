@@ -1,6 +1,23 @@
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
+import torch
+from transformers import AutoTokenizer, AutoModel
+
+
+# Same thing as in backend-flask-server/db/populate_db.py but we gotta go fast... (cba to refactor)
+def embed_message(msg, model_name="bert-base-uncased"):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModel.from_pretrained(model_name).to(device)
+
+    inputs = tokenizer(msg, padding=True, truncation=True, return_tensors="pt").to(device)
+    with torch.no_grad():
+        outputs = model(**inputs)
+    embeddings = outputs.last_hidden_state.mean(dim=1).squeeze().tolist()
+
+    return embeddings
+
 class DatabaseConnection:
     """Schema:
         line_number SERIAL PRIMARY KEY,
@@ -55,6 +72,20 @@ class DatabaseConnection:
     def commit(self):
         self.conn.commit()
 
+    def query_with_reference(self, message, model_name="bert-base-uncased", top_k=10):
+        # Embed the input message
+        message_embedding = embed_message(message, model_name)
+        message_embedding_str = ','.join([str(e) for e in message_embedding])
+
+        # Perform a dot product similarity search
+        sql = f"""
+        SELECT line_number, timestamp, machine, layer, message, 1 - (message_vector <=> '[{message_embedding_str}]') AS similarity
+        FROM log_entries
+        ORDER BY 1 - (message_vector <=> '[{message_embedding_str}]') DESC
+        LIMIT {top_k};
+        """
+        return self.run_sql(sql)
+
     def __enter__(self):
         return self
 
@@ -76,12 +107,13 @@ def main():
     args = parser.parse_args()
 
     with DatabaseConnection(args.password, args.user, args.host, args.port, args.dbname) as db:
-        result = db.run_sql(args.sql)
-        if result:
-            for row in result:
-                print(row)
-        else:
-            print("SQL command executed successfully, no output to display.")
+        print(db.query_with_reference("error: kex_exchange_identification: Connection closed by remote host"))
+        # result = db.run_sql(args.sql)
+        # if result:
+        #     for row in result:
+        #         print(row)
+        # else:
+        #     print("SQL command executed successfully, no output to display.")
 
 if __name__ == "__main__":
     main()
