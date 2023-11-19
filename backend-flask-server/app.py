@@ -75,6 +75,9 @@ def get_context():
 
 @app.route('/api/response', methods=['POST'])
 def get_chat_response():
+    
+    start_time = time.time()
+    print("[get_chat_response] Request received.")
 
     try:
         data = request.json
@@ -83,13 +86,20 @@ def get_chat_response():
         summary = data.get('summary', '')  
         
         sql_str, reference_str, response_str = g.chat_assistant.user_msg_to_sql_and_reference_and_response(user_msgs, bot_msgs)
-
+        if not all([sql_str, reference_str, response_str]):
+            print("[get_chat_response] Error: SQL, reference, or response string is empty.")
+            response_str = "Sorry, this was not specific enough. Please ask a question about the system log you uploaded."
+            return jsonify({'botResponse': response_str, 'filteredRows': [], 'summary': summary})
+        print(f"[get_chat_response] SQL: {sql_str} | Reference: {reference_str} | Response: {response_str}")
+        
         # If the SQL filter includes a WHERE clause, remove it and everything before.
         if "WHERE" in sql_str:
             sql_str = sql_str[sql_str.index("WHERE") + 6:]
         
         # List of tuples (row number, datetime.datetime, network, layer, msg, score)
-        filtered_rows = g.db.query_with_reference(reference_str, top_k=50)
+        filtered_rows = g.db.query_with_reference(reference_str, top_k=5)
+        print(f"[get_chat_response] DB Query successful (len(filtered_rows)={len(filtered_rows)}).")
+            
         filtered_rows = [{
             'rowNo': row[0],
             'datetime': row[1].strftime("%Y-%m-%d %H:%M:%S"),
@@ -100,6 +110,8 @@ def get_chat_response():
         } for row in filtered_rows]
         
         updated_summary = g.chat_assistant.update_summary(filtered_rows, summary)
+        
+        print(f"[get_chat_response] Request completed in {time.time() - start_time} seconds.")
 
         return jsonify({'botResponse': response_str, 'filteredRows': filtered_rows, 'summary': updated_summary})
     except Exception as e:

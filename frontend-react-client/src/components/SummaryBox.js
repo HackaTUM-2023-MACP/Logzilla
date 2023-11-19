@@ -30,20 +30,23 @@ const SummaryBox = ({ className }) => {
   }, []); // Removed dependencies to only fetch on mount
 
   return (
-    <div className={`relative w-max-full p-5 text-lg rounded-md shadow-md bg-slate-50 ${className} summaryboxComponent`}>
+    <div className={`relative w-max-full p-5 text-lg rounded-md shadow-md overflow-scroll bg-slate-50 ${className} summaryboxComponent`}>
       {loading && (
         <div className="absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center z-10">
           <CircularProgress />
         </div>
       )}
-      <Markdown
-        children={summary}
-        className={''}
-        components={{
-          myref: ({ node, ...props }) => <RowReference {...props} />,
-        }}
-        rehypePlugins={[rehypeRaw]}
-      />
+      <div>
+        <p className='font-bold mb-3 text-lg font-mono'>Summary</p>
+        <Markdown
+          children={summary}
+          className={''}
+          components={{
+            myref: ({ node, ...props }) => <RowReference {...props} />,
+          }}
+          rehypePlugins={[rehypeRaw]}
+        />
+      </div>
     </div>
   );
 };
