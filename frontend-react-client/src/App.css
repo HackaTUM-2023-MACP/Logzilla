@@ -28,6 +28,10 @@
   color: #61dafb;
 }
 
+body {
+  background-color: #282c34;
+}
+
 .navbarComponent {
   background-color: #282c34;
   display: flex;
@@ -35,7 +39,7 @@
   align-items: center;
   justify-content: center;
   color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.18);
 }
 
 .navbarContent {
@@ -53,12 +57,39 @@
   width: 100vw;
   margin: 0;
   color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.18);
   gap: 1em;
 }
 
-.minheight {
-  min-height: 200px;
+.summaryboxComponent {
+  min-height: 80vh;
+  max-height: 80vh;
+  background-color: #1e2128;
+  color: white;
+}
+
+.chatboxComponent {
+  min-height: 80vh;
+  max-height: 80vh;
+  background-color: #1e2128;
+  color: white;
+}
+
+.chatboxContent {
+  min-height: calc(80vh - 90px);
+  max-height: calc(80vh - 90px);
+}
+
+.rowReferenceHeader {
+  background-color: #282c34;
+}
+
+.rowReferenceBodyEven {
+  background-color: #1e2128;
+}
+
+.rowReferenceBodyOdd {
+  background-color: #282c34;
 }
 
 @keyframes App-logo-spin {
