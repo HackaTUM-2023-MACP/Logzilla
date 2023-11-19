@@ -1,9 +1,8 @@
 # For summarization
-from langchain.chains import MapReduceDocumentsChain, ReduceDocumentsChain, StuffDocumentsChain
+from langchain.chains import LLMChain, MapReduceDocumentsChain, ReduceDocumentsChain, StuffDocumentsChain
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.schema.document import Document
 from langchain.prompts import PromptTemplate
-from langchain import LLMChain
 
 # for parsing logs
 from .log_parser import parse_log
