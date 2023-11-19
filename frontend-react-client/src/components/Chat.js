@@ -21,7 +21,7 @@ const ChatComponent = ({ className }) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ 
-          userMessages: userMessages,
+          userMessages: newUserMessages,
           botMessages: botMessages
         }),
       });
