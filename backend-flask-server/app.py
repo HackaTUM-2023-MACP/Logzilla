@@ -5,14 +5,85 @@ from db import DatabaseConnection
 from flask import Flask, send_file, request, jsonify, g
 import ChatAssistant from query_generator
 
-from db import insert_log_data, parse_log
+import torch
+import transformers
+from transformers import AutoTokenizer, BitsAndBytesConfig, AutoModelForCausalLM
+from langchain.llms import HuggingFacePipeline
+
+from db import insert_log_data, parse_log, generate_summary
 
 load_dotenv()
 
 app = Flask(__name__)
 
 UPLOAD_FOLDER = './uploads'
+USE_MISTRAL = True # flag to whether use the 7b instruction tuned mistral model
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# Create hugging face model
+if USE_MISTRAL == True:
+    # Load model config to cache
+    model_name='mistralai/Mistral-7B-Instruct-v0.1'
+
+    model_config = transformers.AutoConfig.from_pretrained(
+        model_name
+    ) 
+
+    # Initialize tokenizer
+    tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+    tokenizer.pad_token = tokenizer.eos_token
+    tokenizer.padding_side = "right"
+
+    # Specify quantization config
+    use_4bit = True
+
+    # Compute dtype for 4-bit base models
+    bnb_4bit_compute_dtype = "float16"
+
+    # Quantization type (fp4 or nf4)
+    bnb_4bit_quant_type = "nf4"
+
+    # Activate nested quantization for 4-bit base models (double quantization)
+    use_nested_quant = False
+
+    compute_dtype = getattr(torch, bnb_4bit_compute_dtype)
+
+    bnb_config = BitsAndBytesConfig(
+        load_in_4bit=use_4bit,
+        bnb_4bit_quant_type=bnb_4bit_quant_type,
+        bnb_4bit_compute_dtype=compute_dtype,
+        bnb_4bit_use_double_quant=use_nested_quant,
+    )
+
+    # Check GPU compatibility with bfloat16
+    if compute_dtype == torch.float16 and use_4bit:
+        major, _ = torch.cuda.get_device_capability()
+        if major >= 8:
+            print("=" * 80)
+            print("Your GPU supports bfloat16: accelerate training with bf16=True")
+            print("=" * 80) 
+
+    # Load model
+    model = AutoModelForCausalLM.from_pretrained(
+        model_name,
+        quantization_config=bnb_config,
+    )
+
+    # Initialize langchain LLM from hugging face pipeline 
+    text_generation_pipeline = transformers.pipeline(
+        model=model,
+        tokenizer=tokenizer,
+        task="text-generation",
+        #temperature=0.2,
+        repetition_penalty=1.1,
+        return_full_text=True,
+        max_new_tokens=300,
+        #do_sample=True
+    )
+
+    # This is the object to pass to generate summaries (first you need MapReduceDocumentChain's)
+    llm = HuggingFacePipeline(pipeline=text_generation_pipeline)
+
 
 
 # TODO: Maybe refactor this into a pool?
@@ -134,7 +205,9 @@ def upload_file():
         if file:
             log_data = write_and_readfile(file)
             insert_log_data(g.db, log_data, whitelist=whitelist, blacklist=blacklist)
-            return jsonify(message='File uploaded and log entries inserted successfully', success=True, filename=file.filename)
+            # TODO - @altay generate summary
+            summary = generate_summary(log_data, llm, use_mistral=USE_MISTRAL)
+            return jsonify(message='File uploaded and log entries inserted successfully', success=True, filename=file.filename, summary=summary)
         else:
             return jsonify(message='No file was uploaded', success=False), 400
         
