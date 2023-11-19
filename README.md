@@ -1,4 +1,4 @@
-# Logzilla - Rohde & Schwarz Challenge
+# 🦖 Logzilla - hackaTUM23 Rohde & Schwarz Challenge
 > "A solution that will eat up your logs like Godzilla, and will then talk to you about it"
 
 This is a webapp that was part of the Rohde & Schwarz challenge track about "Summarizing and Chatting with log files" in hackaTUM 2023. Our solution allows the user to upload a log file and gives a short summary of it to inform the user and to inspire the user to ask further questions. Through an interactive experience with a chatbot, it keeps updating the dynamic summary depending on the user's interest and the conversation history so far.
