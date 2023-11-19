@@ -7,7 +7,7 @@ const Footer = ({ height }) => {
 
   return (
     <footer 
-      className='flex justify-between max-w-3xl m-auto'
+      className='flex justify-between footerComponent'
       style={{ height: `${height}` }}
     >
       <div className="left">© {currentYear}</div>

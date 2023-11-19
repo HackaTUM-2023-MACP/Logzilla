@@ -23,9 +23,9 @@ const RowReference = ({ ...props }) => {
 
   // Build rows beforehand
   const rows = [
-    { number: rowNo - 1, text: contextArray[0], score: null },
+    // { number: rowNo - 1, text: contextArray[0], score: null },
     { number: rowNo, text: rowText, score: rowScore },
-    { number: rowNo + 1, text: contextArray[1], score: null },
+    // { number: rowNo + 1, text: contextArray[1], score: null },
   ];
 
   return (

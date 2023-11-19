@@ -102,6 +102,15 @@ class DatabaseConnection:
         return self.run_sql(sql)
 
 
+    def random_n(self, n):
+        sql = f"""
+        SELECT line_number, timestamp, machine, layer, message
+        FROM log_entries
+        ORDER BY RANDOM()
+        LIMIT {n};
+        """
+        return self.run_sql(sql)
+
     def __enter__(self):
         return self
 
