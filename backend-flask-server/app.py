@@ -127,6 +127,8 @@ def upload_file():
         blacklist = request.form.getlist('blacklist')
 
         if whitelist == []: whitelist = None
+        else:
+            whitelist = [l for l in whitelist[0].split(',') if l != '']
         if blacklist == []: blacklist = None
 
         print(f"Whitelist: {whitelist}, Blacklist: {blacklist}")
@@ -154,6 +156,7 @@ def get_log_layers():
         else:
             return jsonify(error="No file was uploaded"), 400
     except Exception as e:
+        print("Error:", e)
         return jsonify(error=str(e)), 500
 
 

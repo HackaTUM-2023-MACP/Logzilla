@@ -1,0 +1,18 @@
+.masked-container {
+    -webkit-mask-image: linear-gradient(to bottom, black 40%, rgba(0,0,0,0.5) 60%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 40%, rgba(0,0,0,0.5) 60%, transparent 100%);
+    overflow: hidden;
+}
+
+.tagButton {
+    /* border-width: 2px; */
+
+}
+
+.selectedTag {
+    background-color: rgb(50, 183, 97);
+}
+
+.selectedTag:hover  {
+    background-color: rgb(40, 163, 77);
+}
