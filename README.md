@@ -1,5 +1,5 @@
 # Logzilla - Rohde & Schwarz Challenge
-Hackathon template with a React frontend and Flask backend. Docker containers for easy deployment.
+> "A solution that will eat up your logs like Godzilla, and will talk to you about it"
 
 Libraries already included:
 ```bash
