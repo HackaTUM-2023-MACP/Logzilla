@@ -1,18 +1,13 @@
 import React, { useState, createContext, useContext } from 'react';
 import ChatComponent from '../components/Chat';
 import SummaryBox from '../components/SummaryBox';
-import TopKLogContext from '../components/TopKLogContext';
 
 
 
 const ChatPage = ({ navbarHeight, footerHeight }) => {
-  // Define the initial values for topKLogRefs and summary
-  const [topKLogRefs, setTopKLogRefs] = useState([]);
-  const [summary, setSummary] = useState('');
 
   return (
     // Wrap the JSX code with the TopKLogContext.Provider and pass the values as the value prop
-    <TopKLogContext.Provider value={{ topKLogRefs, setTopKLogRefs, summary, setSummary }}>
       <div
         className='flex flex-col items-center justify-center w-full h-full'
         style={{ height: `calc(100vh - ${navbarHeight} - ${footerHeight})` }}
@@ -28,7 +23,6 @@ const ChatPage = ({ navbarHeight, footerHeight }) => {
           </div>
         </div>
       </div>
-    </TopKLogContext.Provider>
   );
 };
 

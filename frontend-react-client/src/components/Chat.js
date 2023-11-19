@@ -2,29 +2,11 @@ import React, { useState, useEffect, useContext } from 'react';
 import Message from './Message'; // Make sure to provide the correct path to the Message component
 import TopKLogContext from './TopKLogContext';
 
-
 const ChatComponent = ({ className }) => {
+  const { topKLogRefs, setTopKLogRefs, summary, setSummary, logFileName, setLogFileName  } = useContext(TopKLogContext);
   const [userMessages, setUserMessages] = useState([]);
-  const [botMessages, setBotMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
-  const { topKLogRefs, setTopKLogRefs, summary, setSummary } = useContext(TopKLogContext);
-
-  useEffect(() => {
-    // Fetch initial messages from the server
-    fetchMessages();
-  }, []);
-
-  const fetchMessages = async () => {
-    try {
-      const response = await fetch('/api/chat-messages');
-      const data = await response.json();
-      const { userMessages, botMessages } = data;
-      setUserMessages(userMessages);
-      setBotMessages(botMessages);
-    } catch (error) {
-      console.error('Error fetching messages:', error);
-    }
-  };
+  const [botMessages, setBotMessages] = useState([`Hello there! I am able to customize the summary of ${logFileName} if you tell me what you want to know!`]);
 
   const handleUserMessageSubmit = async () => {
     // Simulate sending a user message and getting a bot response
@@ -60,9 +42,23 @@ const ChatComponent = ({ className }) => {
     }
   };
 
+  useEffect(() => {
+    // Code to execute when botMessages changes
+    // This will re-render the component whenever botMessages changes
+  }, [botMessages]);
+
   return (
     <div className={`max-w-md mx-auto p-4 bg-gray-100 rounded-md shadow-md ${className}`}>
       <div className="h-64 overflow-y-auto mb-4">
+        {botMessages.length > 0 && (
+          <Message
+            key={`bot-initial`}
+            isSent={false}
+            message={botMessages[0]}
+            senderName="Logzilla Bot"
+            profilePicture="bot_profile_picture_url"
+          />
+        )}
         {userMessages.map((message, index) => (
           <>
             <Message
@@ -72,12 +68,12 @@ const ChatComponent = ({ className }) => {
               senderName="You"
               profilePicture="your_profile_picture_url"
             />
-            {botMessages[index] && (
+            {botMessages[index + 1] && (
               <Message
                 key={`bot-${index}`}
                 isSent={false}
-                message={botMessages[index]}
-                senderName="Bot"
+                message={botMessages[index + 1]}
+                senderName="Logzilla Bot"
                 profilePicture="bot_profile_picture_url"
               />
             )}
@@ -101,8 +97,7 @@ const ChatComponent = ({ className }) => {
         </button>
       </div>
     </div>
-  );
+  );  
 }
-
 
 export default ChatComponent;

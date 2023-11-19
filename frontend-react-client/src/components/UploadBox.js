@@ -1,16 +1,18 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import TopKLogContext from './TopKLogContext';
+
 
 import "./UploadBox.css";
 
 const UploadBox = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [isWaiting, setIsWaiting] = useState(false);
-  const [filePath, setFilePath] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [tags, setTags] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedButtons, setSelectedButtons] = useState([]);
+  const { logFileName, setLogFileName } = useContext(TopKLogContext);
 
   const fileInputRef = useRef(null);
 
@@ -67,7 +69,7 @@ const UploadBox = () => {
     try {
       setIsWaiting(true);
       setSelectedFile(file);
-      setFilePath(file.name);
+      setLogFileName(file.name);
       const formData = createFormData(file);
 
       const response = await fetch('/api/layers', {
@@ -152,7 +154,7 @@ const UploadBox = () => {
         <div className="text-center">
           {isWaiting ? (
             <div>
-              <p className="text-4xl font-bold mb-10">{filePath}</p>
+              <p className="text-4xl font-bold mb-10">{logFileName}</p>
               <p className='mb-5'>Processing</p>
               <CircularProgress/>
             </div>
