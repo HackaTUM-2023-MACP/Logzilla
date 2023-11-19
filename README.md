@@ -1,4 +1,4 @@
-# awesome-react-flask-docker
+# Logzilla - Rohde & Schwarz Challenge
 Hackathon template with a React frontend and Flask backend. Docker containers for easy deployment.
 
 Libraries already included:
