@@ -1,10 +1,9 @@
 # 🦖 Logzilla - hackaTUM23 Rohde & Schwarz Challenge
 > "A solution that will eat up your logs like Godzilla, and will then talk to you about it"
 
-Submission for the HackaTUM 2023 challenge "Rohde & Schwarz: Summarizing and Chatting with log files" | [Devpost](https://devpost.com/software/logzilla?ref_content=my-projects-tab&ref_feature=my_projects)
-
-![logo512](https://github.com/HackaTUM-2023-MACP/Logzilla/assets/45896065/322cf309-8b97-442b-9b2a-b09a76b68056)
 ![logo192](https://github.com/HackaTUM-2023-MACP/Logzilla/assets/45896065/188bf01e-f044-4c5a-81ce-f65a9bc110bf)
+
+Submission for the HackaTUM 2023 challenge "Rohde & Schwarz: Summarizing and Chatting with log files" | [Devpost](https://devpost.com/software/logzilla?ref_content=my-projects-tab&ref_feature=my_projects)
 
 # How to Use it:
 
@@ -21,8 +20,6 @@ Submission for the HackaTUM 2023 challenge "Rohde & Schwarz: Summarizing and Cha
 The AI-powered system in the backend parses the logs, filters accordingly, and keeps track of a database generated from the initial file. The system predicts queries in parallel to the chat to retrieve the most relevant entries from the database (which correspond to log rows) to then present them to the user and incorporate to the current summary iteratively.
 
 # 🏃Running
-
-## 🛠️In Development
 
 You need `Node.js` (to use `npm`) and `Python` with the required dependencies. On MacOS:
 ```bash
@@ -55,49 +52,6 @@ DANGEROUSLY_DISABLE_HOST_CHECK=true npm run start
 > 
 > The frontend listens to default port `3000`.
 
-## 💻Deployment
-
-Using a Gunicorn server for the Python project, and nginx as a reverse proxy in front of it. All commands are run from the root directory.
-
-### Building the Docker images together with docker-compose
-
-```bash
-docker compose up
-```
-
-or `docker-compose up` on older versions. Use `docker compose up -d --no-deps --build` to rebuild.
-
-### Building the Docker images separately for testing
-```bash
-# backend
-docker build -f Dockerfile.backend -t app-backend .
-# frontend
-docker build -f Dockerfile.frontend -t app-frontend .
-```
-Running the backend Docker image for testing: `docker run --rm -p 4000:4000 app-backend`. Then navigate to `localhost:4000/`. Running the frontend image will result in a failure from nginx, which is not going to recognize the http://api:5000 proxy URL.
-
-### ☁️Deploying on GCP
-
-- Choose a VM type, e.g. `e2-medium`.
-- Choose a boot disk. I like `Ubuntu 20.04 LTS`.
-- Enable HTTP and HTTPS traffic.
-- Add an SSH key
-- Create the VM.
-- Go to `Network interfaces` > Click on `Network details` > `VPC Network` > `Firewall` > `CREATE FIREWALL RULE`
-    - Apply it to the VM: Under `Targets` select `Specified target tags` and enter `<SOME_TAG_NAME>`
-        - Or just apply it to all VMs.
-    - Set `Source IPv4 Ranges` to `0.0.0.0/0`
-    - In `Protocols and Ports` check `TCP` and enter `3000` (or whatever port to expose)
-    - Create the rule and apply the tag `<SOME_TAG_NAME>` to the VM instance.
-
-# 📑References
-
-Based on the [React + Flask + Docker tutorial](https://blog.miguelgrinberg.com/post/how-to-create-a-react--flask-project) from Miguel Grinberg. [Part2](https://blog.miguelgrinberg.com/post/how-to-deploy-a-react--flask-project), [Part3](https://blog.miguelgrinberg.com/post/how-to-deploy-a-react-router-flask-application), [Part4](https://blog.miguelgrinberg.com/post/how-to-dockerize-a-react-flask-project).
-
-Set up tailwindcss according to these [instructions](https://tailwindcss.com/docs/guides/create-react-app).
-
-
-# Other Hackathon Stuff
 
 - [Color Generator](https://coolors.co)
 - [Perfect Devpost Template](https://devpost.com/software/example-template-submission)
