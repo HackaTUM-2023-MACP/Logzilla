@@ -3,7 +3,9 @@
 
 Submission for the HackaTUM 2023 challenge "Rohde & Schwarz: Summarizing and Chatting with log files" | [Devpost](https://devpost.com/software/logzilla?ref_content=my-projects-tab&ref_feature=my_projects)
 
-![Uploading logo512.png…]()
+![logo512](https://github.com/HackaTUM-2023-MACP/Logzilla/assets/45896065/322cf309-8b97-442b-9b2a-b09a76b68056)
+
+![Screenshot 2023-11-20 at 18 27 10](https://github.com/HackaTUM-2023-MACP/Logzilla/assets/45896065/14868fbf-a0c2-4b8f-afa9-ae9b31892ab6)
 
 # How to Use it:
 
@@ -12,7 +14,7 @@ Submission for the HackaTUM 2023 challenge "Rohde & Schwarz: Summarizing and Cha
 3. **Interact**: Engage in a conversation with the chatbot to explore specific log entries and refine the summary based on your interests.
 4. **Dynamic Updates**: The system continuously adapts the summary based on your queries and conversation history, ensuring a personalized and efficient user experience.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/5oBkJUfh7PI?si=cWe1oHeTkJ1CkT7r" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+![Watch the Demo on YouTube.](https://github.com/HackaTUM-2023-MACP/Logzilla/assets/45896065/14868fbf-a0c2-4b8f-afa9-ae9b31892ab6)(https://youtu.be/5oBkJUfh7PI?si=FYCHrDTPwncpWO9M)
 
 ## How it works:
 
