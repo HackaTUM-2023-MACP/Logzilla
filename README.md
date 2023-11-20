@@ -1,10 +1,22 @@
 # 🦖 Logzilla - hackaTUM23 Rohde & Schwarz Challenge
 > "A solution that will eat up your logs like Godzilla, and will then talk to you about it"
 
-This is a webapp that was part of the Rohde & Schwarz challenge track about "Summarizing and Chatting with log files" in hackaTUM 2023. Our solution allows the user to upload a log file and gives a short summary of it to inform the user and to inspire the user to ask further questions. Through an interactive experience with a chatbot, it keeps updating the dynamic summary depending on the user's interest and the conversation history so far.
+Submission for the HackaTUM 2023 challenge "Rohde & Schwarz: Summarizing and Chatting with log files" | [Devpost](https://devpost.com/software/logzilla?ref_content=my-projects-tab&ref_feature=my_projects)
 
-The intelligent AI-powered system in the backend parses the logs, filters accordingly, and keeps track of a database generated from the initial file. The system predicts queries in parallel to the chat to retreive the most relevant entries from the database (which correspond to log rows) to then present them to the user and incorporate to the current summary iteratively.
+![Uploading logo512.png…]()
 
+# How to Use it:
+
+1. **Upload**: Upload your log file.
+2. **Summarize**: Receive a brief summary of the log file to quickly grasp its key points.
+3. **Interact**: Engage in a conversation with the chatbot to explore specific log entries and refine the summary based on your interests.
+4. **Dynamic Updates**: The system continuously adapts the summary based on your queries and conversation history, ensuring a personalized and efficient user experience.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/5oBkJUfh7PI?si=cWe1oHeTkJ1CkT7r" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+## How it works:
+
+The AI-powered system in the backend parses the logs, filters accordingly, and keeps track of a database generated from the initial file. The system predicts queries in parallel to the chat to retrieve the most relevant entries from the database (which correspond to log rows) to then present them to the user and incorporate to the current summary iteratively.
 
 # 🏃Running
 
