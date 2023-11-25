@@ -19,6 +19,9 @@ Submission for the HackaTUM 2023 challenge "Rohde & Schwarz: Summarizing and Cha
 
 The AI-powered system in the backend parses the logs, filters accordingly, and keeps track of a database generated from the initial file. The system predicts queries in parallel to the chat to retrieve the most relevant entries from the database (which correspond to log rows) to then present them to the user and incorporate to the current summary iteratively.
 
+![Screenshot 2023-11-20 at 11 45 01](https://github.com/HackaTUM-2023-MACP/Logzilla/assets/45896065/6a62a3fc-ba37-4e97-8172-f1d86af78b89)
+
+
 # 🏃Running
 
 You need `Node.js` (to use `npm`) and `Python` with the required dependencies. On MacOS:
